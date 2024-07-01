@@ -1,36 +1,26 @@
 import React from 'react';
-import { Typography, Grid } from '@material-ui/core';
-import {
-  InfoCard,
-  Header,
-  Page,
-  Content,
-  ContentHeader,
-  HeaderLabel,
-  SupportButton,
-} from '@backstage/core-components';
-import { ExampleFetchComponent } from '../ExampleFetchComponent';
+
+import { InfoCard, Header, Page, Content } from '@backstage/core-components';
+import { ChatMessageDisplay } from '../ChatMessageDisplay/ChatMessageDisplay';
+import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 export const ExampleComponent = () => (
   <Page themeId="tool">
-    <Header title="Welcome to simple-chat!" subtitle="Optional subtitle">
-      <HeaderLabel label="Owner" value="Team X" />
-      <HeaderLabel label="Lifecycle" value="Alpha" />
-    </Header>
+    <Header title="Welcome to simple-chat!" />
     <Content>
-      <ContentHeader title="Plugin title">
-        <SupportButton>A description of your plugin goes here.</SupportButton>
-      </ContentHeader>
       <Grid container spacing={3} direction="column">
         <Grid item>
-          <InfoCard title="Information card">
+          <InfoCard>
             <Typography variant="body1">
-              All content should be wrapped in a card like this.
+              <Box sx={{  height: '30vh', overflow: 'auto' }}>
+                <ChatMessageDisplay />
+              </Box>
+              <ChatMessageInput />
             </Typography>
           </InfoCard>
-        </Grid>
-        <Grid item>
-          <ExampleFetchComponent />
         </Grid>
       </Grid>
     </Content>
