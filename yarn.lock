@@ -2071,7 +2071,7 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
-"@backstage/app-defaults@^1.5.4":
+"@backstage/app-defaults@^1.5.4", "@backstage/app-defaults@^1.5.7":
   version "1.5.7"
   resolved "https://registry.yarnpkg.com/@backstage/app-defaults/-/app-defaults-1.5.7.tgz#3444076ad9612d77a60319c58577ec863635d225"
   integrity sha512-zr3Nd5pyXwa+8LUhtwSKKEPogSwbNarcWsyOVhtbhJsjwuoaNU0sYhXDunW8JeW1UO68mbxxs8qr3SNuDDN+sA==
@@ -2755,6 +2755,24 @@
     "@backstage/version-bridge" "^1.0.8"
     "@types/react" "^16.13.1 || ^17.0.0 || ^18.0.0"
     history "^5.0.0"
+
+"@backstage/dev-utils@^1.0.34":
+  version "1.0.34"
+  resolved "https://registry.yarnpkg.com/@backstage/dev-utils/-/dev-utils-1.0.34.tgz#d5cfdcf06b805c3359e04d00de576629382ba545"
+  integrity sha512-aABjxTQwZkH7BrWnGQl68OPMj+Uv1S6wTLBgIu2P0ulzrLoD74R6iets6O5UNvd8oB+iSb4X/bjSz4nTfR2gKQ==
+  dependencies:
+    "@backstage/app-defaults" "^1.5.7"
+    "@backstage/catalog-model" "^1.5.0"
+    "@backstage/core-app-api" "^1.13.0"
+    "@backstage/core-components" "^0.14.8"
+    "@backstage/core-plugin-api" "^1.9.3"
+    "@backstage/integration-react" "^1.1.28"
+    "@backstage/plugin-catalog-react" "^1.12.1"
+    "@backstage/theme" "^0.5.6"
+    "@material-ui/core" "^4.12.2"
+    "@material-ui/icons" "^4.9.1"
+    "@types/react" "^16.13.1 || ^17.0.0 || ^18.0.0"
+    react-use "^17.2.4"
 
 "@backstage/e2e-test-utils@^0.1.1":
   version "0.1.1"
@@ -10057,6 +10075,7 @@ apg-lite@^1.0.3:
     "@backstage/plugin-techdocs-react" "^1.2.3"
     "@backstage/plugin-user-settings" "^0.8.5"
     "@backstage/theme" "^0.5.3"
+    "@internal/backstage-plugin-simple-chat" "^0.1.0"
     "@material-ui/core" "^4.12.2"
     "@material-ui/icons" "^4.9.1"
     history "^5.0.0"
@@ -21029,7 +21048,7 @@ react-window@^1.8.10, react-window@^1.8.6:
     "@babel/runtime" "^7.0.0"
     memoize-one ">=3.1.1 <6"
 
-react@^18.0.2:
+"react@^16.13.1 || ^17.0.0 || ^18.0.0", react@^18.0.2:
   version "18.3.1"
   resolved "https://registry.yarnpkg.com/react/-/react-18.3.1.tgz#49ab892009c53933625bd16b2533fc754cab2891"
   integrity sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==
