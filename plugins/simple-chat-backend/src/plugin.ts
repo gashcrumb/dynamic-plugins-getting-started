@@ -17,22 +17,18 @@ export const simpleChatPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         logger: coreServices.logger,
         config: coreServices.rootConfig,
+        httpAuth: coreServices.httpAuth,
+        discovery: coreServices.discovery,
       },
-      async init({
-        httpRouter,
-        logger,
-        config,
-      }) {
+      async init({ httpRouter, logger, config, httpAuth, discovery }) {
         httpRouter.use(
           await createRouter({
             logger,
             config,
+            httpAuth,
+            discovery,
           }),
         );
-        httpRouter.addAuthPolicy({
-          path: '/health',
-          allow: 'unauthenticated',
-        });
       },
     });
   },
