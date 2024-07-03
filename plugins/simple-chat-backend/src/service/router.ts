@@ -1,5 +1,5 @@
+import { MiddlewareFactory } from '@backstage/backend-app-api';
 import { createLegacyAuthAdapters } from '@backstage/backend-common';
-import { MiddlewareFactory } from '@backstage/backend-defaults/rootHttpRouter';
 import {
   DiscoveryService,
   HttpAuthService,

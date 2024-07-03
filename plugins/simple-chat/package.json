@@ -21,7 +21,8 @@
     "test": "backstage-cli package test",
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
-    "postpack": "backstage-cli package postpack"
+    "postpack": "backstage-cli package postpack",
+    "export-dynamic": "janus-cli package export-dynamic-plugin"
   },
   "dependencies": {
     "@backstage/core-components": "^0.14.8",
@@ -41,6 +42,7 @@
     "@backstage/core-app-api": "^1.13.0",
     "@backstage/dev-utils": "^1.0.34",
     "@backstage/test-utils": "^1.5.4",
+    "@janus-idp/cli": "^1.11.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
