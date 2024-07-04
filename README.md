@@ -28,7 +28,7 @@ The commands used for deployment were developed with the bash shell in mind on L
 
 This guide is broken up into four top-level phases, bootstrapping the project and getting it ready, implementing the demo functionality, preparing and exporting the plugins as dynamic plugins and finally deploying to OpenShift and configuring Developer Hub to load the plugins.
 
-> Note: If you're just interested in a method to deploy a dynamic plugin to Developer Hub you can skip straight to [to this section](#deployment-step-1)
+> Note: If you're just interested in a method to deploy a dynamic plugin to Developer Hub you can skip straight to [to this section](#phase-4---dynamic-plugin-deployment)
 
 ### Phase 1 - Project Bootstrapping
 
