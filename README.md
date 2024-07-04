@@ -3,11 +3,13 @@
 
 ## Overview
 
+> Note: The Dynamic Plugin functionality is a tech preview feature of Red Hat Developer Hub and is still under active development.  Aspects of packaging and deployment of dynamic plugins are subject to change
+
 This project is an example approach to developing a new set of dynamic plugins by starting from a newly created Backstage application.  The code in this repository is at the state where the plugins should be deployable to OpenShift (OCP) after building.  This guide will go through the steps leading up to this state, and continue on to describe the commands needed to upload the dynamic plugin static content to a standalone httpd server that runs alongside the Red Hat Developer Hub instance.
 
 The initial steps will focus on an operator based Developer Hub installation, perhaps a future update to this README can add the specifics for the Helm-based installation.
 
-At a high level plugin development involves bootstrapping a new Backstage instance using the Backstage `create-app` script, using `yarn new` to create new plugins developing these plugins using their respective development setup.  The provided Backstage app gives an integration point to try all of the plugins together in a Backstage instance by statically integrating the plugins into the Backstage application code.
+At a high level plugin development involves bootstrapping a new Backstage instance using the Backstage `create-app` script, using `yarn new` to create new plugins, and finally developing these plugins using their respective development setup.  The provided Backstage app gives an integration point to try all of the plugins together in a Backstage instance by statically integrating the plugins into the Backstage application code.
 
 Once the plugin functionality is working as intended the plugins can be bundled and deployed to Developer Hub running on OCP by adding an additional build target to each plugin to export the dynamic plugin's static assets in a way that can be loaded by Developer Hub.
 
@@ -25,6 +27,8 @@ The commands used for deployment were developed with the bash shell in mind on L
 ## The Guide
 
 This guide is broken up into four top-level phases, bootstrapping the project and getting it ready, implementing the demo functionality, preparing and exporting the plugins as dynamic plugins and finally deploying to OpenShift and configuring Developer Hub to load the plugins.
+
+> Note: If you're just interested in a method to deploy a dynamic plugin to Developer Hub you can skip straight to [to this section](#deployment-step-1)
 
 ### Phase 1 - Project Bootstrapping
 
@@ -129,7 +133,11 @@ At this point the chat UI should be fully functional, chat messages from other w
 
 ### Phase 3 - Dynamic Plugin enablement
 
-In this phase new build targets will be added to the plugins, along with any necessary tweaks to the plugin code to get them working as a dynamic plugin.  #### Enablement Step 1
+> Note: The Dynamic Plugin feature in Developer Hub is still under active development.  Features and tooling around dynamic plugin enablement are still subject to change.
+
+In this phase new build targets will be added to the plugins, along with any necessary tweaks to the plugin code to get them working as a dynamic plugin.  
+
+#### Enablement Step 1
 
 The first task is to update the `scripts` section of the `package.json` files for the repo to add the `export-dynamic-plugin` command.  Start by adding the following to `plugins/simple-chat-backend/package.json`:
 
@@ -161,7 +169,7 @@ And again update the `devDependencies` section of this file to add the `@janus-i
 
 Update the root `package.json` file to make it easy to run the `export-dynamic` command from the root of the repository by adding the following to the `scripts` section:
 
-_Note: If running this on Windows, either use WSL (or similar) or adjust this command_
+> Note: If running this on Windows, either use WSL (or similar) or adjust this command
 
 ```json
 "export-dynamic": "yarn --cwd plugins/simple-chat-backend export-dynamic && yarn --cwd plugins/simple-chat export-dynamic"
@@ -233,6 +241,8 @@ While this is not currently used by any of the tooling, this still serves as a r
 The results of all of these changes along with the additions discussed in the deployment phase are available in [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/08b637454f437d0c5a1f4185d8abfb2e0b84d83d)
 
 ### Phase 4 - Dynamic Plugin Deployment
+
+> Note: The Dynamic Plugin feature in Developer Hub is still under active development.  Features regarding plugin deployment are still being defined and developed.  The method shown here is one method that doesn't involve using an NPM registry to host plugin static assets.
 
 Deploying a dynamic plugin to Developer Hub involves exporting a special build of the plugin and packing it into a `.tar.gz` file.  Once the dynamic plugins are exported as `.tar.gz` to a directory, that directory will be used to create an image, which will then be served by an `httpd` instance in OCP.  Deployment in Developer Hub is still in a technical preview phase, so there's not much tooling to help.  Some scripts mentioned in the last phase have been added to this repo to hopefully make this process straightforward.
 
@@ -358,7 +368,7 @@ spec:
       configMaps:
         - name: app-config-rhdh
       mountPath: /opt/app-root/src
-    dynamicPluginsConfigMapName: rhdh-dynamic-plugins
+    dynamicPluginsConfigMapName: dynamic-plugins-rhdh
     extraFiles:
       mountPath: /opt/app-root/src
     replicas: 1
