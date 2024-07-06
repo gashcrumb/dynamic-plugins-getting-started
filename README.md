@@ -381,7 +381,7 @@ If there's a need to rebuild the plugins and redeploy the existing scripts can b
 
 Rebuild everything:
 ```bash
-yarn install && yarn run tsc && yarn run build:all && yarn run export-dynamic`
+yarn install && yarn run tsc && yarn run build:all && yarn run export-dynamic
 ```
 
 Stage the `.tar.gz` files:
