@@ -47,13 +47,21 @@ So for Developer Hub 1.2 run:
 npx @backstage/create-app@0.5.14
 ```
 
-When prompted for the name enter "dynamic-plugins-getting-started".  The `create-app` command will generated a git repo with the Backstage app and an [initial commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/6409e6e9a411387fc219dde00184e5cfe1dcb994)
+When prompted for the name enter "dynamic-plugins-getting-started".  After prompting for a project name the `create-app` command will generate a git repo with the Backstage app and an [initial commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/6409e6e9a411387fc219dde00184e5cfe1dcb994)
 
 `yarn install` is run automatically by the `create-app` script.  The script also sets other scripts, such as `yarn tsc` and `yarn build:all` to build the repo as needed.
 
 #### Bootstrapping Step 2
 
-The `create-app` script suggests to change to the "dynamic-plugins-getting-started" directory and run `yarn dev` however the app may not run out of the box.  [Update](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/f6dbc0d24c15687a9fe09d676957c3a8c835fd04) the app's version of `@backstage/backend-defaults` to fix this.  Run `yarn install` after making this change.
+The `create-app` script suggests to change to the "dynamic-plugins-getting-started" directory and run `yarn dev` however the plugins and development setup needs to be prepared first.
+
+[Update](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/f6dbc0d24c15687a9fe09d676957c3a8c835fd04) the app's version of `@backstage/backend-defaults` by changing `packages/backend/package.json` to use the following version:
+
+```json
+"@backstage/backend-defaults": "0.3.3",
+```
+
+Run `yarn install` after making this change.
 
 #### Bootstrapping Step 3
 
@@ -65,24 +73,6 @@ auth:
     guest: {}
 ```
 
-Double-check that the generated backend includes this dependency in `packages/backend/package.json`:
-
-```json
-"@backstage/plugin-auth-backend-module-guest-provider": "^0.1.3",
-```
-
-And that the backend code loads it, in `packages/backend/src/index.ts` there should this line:
-
-```typescript
-backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
-```
-
-if it's missing, add it underneath this line:
-
-```typescript
-backend.add(import('@backstage/plugin-auth-backend'));
-```
-
 #### Bootstrapping Step 4
 
 Now the backend plugin can be bootstrapped.  Run `yarn new` and select `backend-plugin`.  When prompted for a name specify `simple-chat`.  This will generate some example backend plugin code and add this plugin as a dependency to `packages/backend/package.json`.  The backend app however still needs to be updated to load this new backend plugin, add this line to `packages/backend/src/index.ts`:
@@ -91,7 +81,7 @@ Now the backend plugin can be bootstrapped.  Run `yarn new` and select `backend-
 backend.add(import('@internal/backstage-plugin-simple-chat-backend'));
 ```
 
-The end result of all of this should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/5d31fc3cb9b4a02e8d6dc51b5589ae95097657db) and the example backend endpoint should be accessible via `curl` when running `yarn dev` or `yarn start` from `plugins/backend/simple-chat-backend`
+The end result of all of this should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/5d31fc3cb9b4a02e8d6dc51b5589ae95097657db) and the example backend endpoint should be accessible via `curl` when `yarn start` from `plugins/simple-chat-backend`
 
 #### Bootstrapping Step 5
 
@@ -101,7 +91,7 @@ The frontend plugin can now be bootstrapped.  Run `yarn new` and select `plugin`
  <SidebarItem icon={ChatIcon} to="simple-chat" text="Simple Chat" />
 ```
 
-Once completed, the end result should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/0aa89cdfaae84d42366aca0ac8fa018a187cabba) and the example plugin should be visible in the UI.
+Once completed, the end result should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/0aa89cdfaae84d42366aca0ac8fa018a187cabba).  Do a rebuild with `yarn run tsc && yarn run build:all` and then the generated frontend plugin should be visible in the UI when running `yarn start` from the root of the repo.
 
 ### Phase 2 - Plugin Implementation
 
@@ -259,7 +249,7 @@ deploy/*.tgz
 Make sure to build everything at this point, often it's easiest to run a chain of commands from the root of the repo like:
 
 ```text
-yarn install && yarn run tsc && yarn run build:all && yarn run export-dynamic`
+yarn install && yarn run tsc && yarn run build:all && yarn run export-dynamic
 ```
 
 And then use the `01-stage-dynamic-plugins.sh` script to pack the plugins into `.tar.gz` files and display their integrity hashes:
@@ -298,6 +288,8 @@ Once the script is complete, have a look in the OpenShift console Topology view 
 
 Create a custom configuration for Developer Hub called `app-config-rhdh` by creating a new `ConfigMap` with the following contents, however update the `baseUrl` and `origin` settings shown as needed:
 
+> IT IS INCREDIBLY IMPORTANT THAT THE URLS IN THIS CONFIGURATION ARE CORRECT!!!
+
 ```yaml
 kind: ConfigMap
 apiVersion: v1
@@ -308,11 +300,12 @@ data:
 
     app:
       title: Red Hat Developer Hub - Getting Started
-      baseUrl: https://backstage-developer-hub-rhdh-test.apps-crc.testing
+      # Be sure to use the correct url here, the URL given is an example
+      baseUrl: https://backstage-developer-hub-example.apps-crc.testing
     backend:
-      baseUrl: https://backstage-developer-hub-rhdh-test.apps-crc.testing
+      baseUrl: https://backstage-developer-hub-example.apps-crc.testing
       cors:
-        origin: https://backstage-developer-hub-rhdh-test.apps-crc.testing
+        origin: https://backstage-developer-hub-example.apps-crc.testing
 
     auth:
       environment: development
@@ -341,7 +334,7 @@ Create a custom dynamic plugin configuration for Developer Hub called `dynamic-p
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: rhdh-dynamic-plugins
+  name: dynamic-plugins-rhdh
 data:
   dynamic-plugins.yaml: |
     includes:
