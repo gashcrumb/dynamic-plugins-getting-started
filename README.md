@@ -49,7 +49,7 @@ npx @backstage/create-app@0.5.14
 
 When prompted for the name enter "dynamic-plugins-getting-started".  After prompting for a project name the `create-app` command will generate a git repo with the Backstage app and an [initial commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/6409e6e9a411387fc219dde00184e5cfe1dcb994)
 
-`yarn install` is run automatically by the `create-app` script.  The script also sets other scripts, such as `yarn tsc` and `yarn build:all` to build the repo as needed.
+`yarn install` is run automatically by the `create-app` script.  The generated `package.json` also contains scripts such as `yarn tsc` and `yarn build:all` to build the repo as needed.
 
 #### Bootstrapping Step 2
 
