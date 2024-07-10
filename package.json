@@ -23,7 +23,7 @@
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
     "new": "backstage-cli new --scope internal",
-    "export-dynamic": "yarn --cwd plugins/simple-chat-backend export-dynamic && yarn --cwd plugins/simple-chat export-dynamic"
+    "export-dynamic": "yarn workspaces foreach -A run export-dynamic"
   },
   "workspaces": {
     "packages": [
@@ -55,5 +55,6 @@
     "*.{json,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "packageManager": "yarn@3.8.3"
 }

@@ -3,7 +3,7 @@
 
 ## Overview
 
-> Note: The Dynamic Plugin functionality is a tech preview feature of Red Hat Developer Hub and is still under active development.  Aspects of packaging and deployment of dynamic plugins are subject to change
+> Note: The Dynamic Plugin functionality is a tech preview feature of Red Hat Developer Hub and is still under active development.  Aspects of developing, packaging and deployment of dynamic plugins are subject to change
 
 This project is an example approach to developing a new set of dynamic plugins by starting from a newly created Backstage application.  The code in this repository is at the state where the plugins should be deployable to OpenShift (OCP) after building.  This guide will go through the steps leading up to this state, and continue on to describe the commands needed to upload the dynamic plugin static content to a standalone httpd server that runs alongside the Red Hat Developer Hub instance.
 
@@ -17,7 +17,7 @@ Once the plugin functionality is working as intended the plugins can be bundled 
 
 * node 20.x (node 18 may work fine also but untested)
 * npm (10.8.1 was used during development)
-* yarn (1.22.22 was used during development)
+* yarn (1.22.22 was used during initial development but now at least 3.8.1 is required _And you should [migrate](#migrate-generated-app-to-yarn-v3) to Yarn 3_)
 * jq (1.7.1 was used during development)
 * oc
 * an OpenShift cluster with an untouched operator based Developer Hub deployment
@@ -377,6 +377,8 @@ If everything has worked properly the new instance of Developer Hub should conta
 
 #### Appendix
 
+### Development Loop
+
 If there's a need to rebuild the plugins and redeploy the existing scripts can be used.  The development loop at this point looks like:
 
 Rebuild everything:
@@ -395,3 +397,6 @@ Update the image:
 bash ./03-update-plugin-registry.sh
 ```
 
+### Migrate generated app to Yarn v3
+
+Out of the box the `create-app` command sets up a Yarn v1 project, which quickly becomes troublesome as this version is almost unmaintained.  A good option is to migrate the project to Yarn v3 as discussed in the Backstage documentation [here](https://backstage.io/docs/tutorials/yarn-migration/).  This project has been migrated to use Yarn v3 now.
