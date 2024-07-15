@@ -113,7 +113,7 @@ At this point the chat UI should appear functional even from other windows, howe
 
 #### Implementation Step 2
 
-Create the backend implementation by changing directory to `plugins/simple-chat-backend` and running `yarn start` to start up the backend plugin's development environment.  This simple development environment runs a test backend including the backend plugin.  This also happens to serve out the same static assets as the main application, so the frontend UI plugin should be visible at `http://localhost:7007`, and can be used to help develop the backend.
+  To develop the backend using the frontend as a client, run `yarn start-backend` to run the app backend.  This also happens to serve out the same static assets as the main application, so the frontend UI plugin should be visible at `http://localhost:7007`, and can be used to help develop the backend.  It is also possible to create the backend implementation by changing directory to `plugins/simple-chat-backend` and running `yarn start` to start up the backend plugin's development environment.  This simple development environment runs a stripped down backend including the backend plugin, however no static assets such as the frontend UI are available in this mode.
 
 In this case the backend implementation imports the httpAuth service to check if incoming requests have an authorization token, either for posting a new message or fetching the available messages.  These messages are simply stored in an array for this example.
 
