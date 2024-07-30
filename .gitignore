@@ -35,7 +35,8 @@ node_modules/
 dist
 dist-types
 dist-dynamic
-deploy/*.tgz
+deploy/*
+!deploy/.gitkeep
 
 # Temporary change files created by Vim
 *.swp
