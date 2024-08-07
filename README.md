@@ -132,7 +132,7 @@ In this phase new build targets will be added to the plugins, along with any nec
 The first task is to update the `scripts` section of the `package.json` files for the repo to add the `export-dynamic-plugin` command.  Start by adding the following to `plugins/simple-chat-backend/package.json`:
 
 ```json
- "export-dynamic": "janus-cli package export-dynamic-plugin --embed-as-dependencies"
+ "export-dynamic": "janus-cli package export-dynamic-plugin --no-embed-as-dependencies"
 ```
 
 And update the `devDependencies` section of this file to add the `@janus-idp/cli` tool:
