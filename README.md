@@ -290,6 +290,25 @@ Create a custom configuration for Developer Hub called `app-config-rhdh` by crea
 
 > IT IS INCREDIBLY IMPORTANT THAT THE URLS IN THIS CONFIGURATION ARE CORRECT!!!
 
+NOTE for BUG [RHIDP-3217](https://issues.redhat.com/browse/RHIDP-3217?focusedId=25156525&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-25156525):
+
+A workaround is available - explicitly add the rhdh.redhat.com/ext-config-sync annotation and rhdh.redhat.com/ext-config-sync label to all the ConfigMaps and Secrets referenced in your Backstage Custom Resource (CR), before applying the CR, like so:
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata: 
+  name: app-config-rhdh
+  labels: 
+    # This needs to be set to the value of the 'EXT_CONF_SYNC_backstage' env var in the operator container, which is 'true' if unset
+    rhdh.redhat.com/ext-config-sync: "true"
+  annotations: 
+    # TODO: replace developer-hub with the name of your own CR
+    rhdh.redhat.com/backstage-name: "developer-hub"
+data: 
+# --- Truncated
+```
+
+
 ```yaml
 kind: ConfigMap
 apiVersion: v1
@@ -353,6 +372,8 @@ __Watch out for the quotes!__
 #### Deployment Step 6
 
 Now update the operator `CustomResource` to load these two ConfigMaps as configuration for DeveloperHub:
+
+NOTE: a bug requires additional information to be added to the 
 
 ```yaml
 spec:
