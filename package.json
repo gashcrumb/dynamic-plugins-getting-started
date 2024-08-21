@@ -34,6 +34,7 @@
   "devDependencies": {
     "@backstage/cli": "^0.26.3",
     "@backstage/e2e-test-utils": "^0.1.1",
+    "@janus-idp/cli": "^1.13.1",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^12.0.0",
     "concurrently": "^8.0.0",

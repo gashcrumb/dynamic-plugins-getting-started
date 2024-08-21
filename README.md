@@ -129,40 +129,46 @@ In this phase new build targets will be added to the plugins, along with any nec
 
 #### Enablement Step 1
 
-The first task is to update the `scripts` section of the `package.json` files for the repo to add the `export-dynamic-plugin` command.  Start by adding the following to `plugins/simple-chat-backend/package.json`:
+First prepare the root `package.json` file by updating the `devDependencies` section and add the `@janus-idp/cli` tool:
 
 ```json
- "export-dynamic": "janus-cli package export-dynamic-plugin --embed-as-dependencies"
+ "@janus-idp/cli": "^1.13.1",
 ```
 
-And update the `devDependencies` section of this file to add the `@janus-idp/cli` tool:
-
-```json
- "@janus-idp/cli": "^1.11.1",
-```
+The next job is to update the `scripts` section of the `package.json` files for the repo to add the `export-dynamic-plugin` command.
 
 #### Enablement Step 2
 
-Add the following to `plugins/simple-chat/package.json`:
+Add the following to the `scripts` section of `plugins/simple-chat-backend/package.json`:
+
+```json
+ "export-dynamic": "janus-cli package export-dynamic-plugin"
+```
+
+#### Enablement Step 3
+
+Add the following to the `scripts` section of `plugins/simple-chat/package.json`:
 
 ```json
 "export-dynamic": "janus-cli package export-dynamic-plugin"
 ```
 
-And again update the `devDependencies` section of this file to add the `@janus-idp/cli` tool:
+#### Enablement Step 4
 
-```json
- "@janus-idp/cli": "^1.11.1",
-```
+Update the root `package.json` file to make it easy to run the `export-dynamic` command from the root of the repository by adding one of the following to the `scripts` section:
 
-#### Enablement Step 3
-
-Update the root `package.json` file to make it easy to run the `export-dynamic` command from the root of the repository by adding the following to the `scripts` section:
+##### using yarn v1
 
 > Note: If running this on Windows, either use WSL (or similar) or adjust this command
 
 ```json
 "export-dynamic": "yarn --cwd plugins/simple-chat-backend export-dynamic && yarn --cwd plugins/simple-chat export-dynamic"
+```
+
+##### using yarn v3+
+
+```json
+"export-dynamic": "yarn workspaces foreach -A run export-dynamic"
 ```
 
 Also update the `.gitignore` file at this point to ignore `dist-dynamic` directories:
@@ -171,7 +177,7 @@ Also update the `.gitignore` file at this point to ignore `dist-dynamic` directo
 dist-dynamic
 ```
 
-#### Enablement Step 4
+#### Enablement Step 5
 
 The backend as generated needs a couple tweaks to work as a dynamic plugin, as the generated code relies on a component imported from `@backstage/backend-defaults`.  Update `plugins/simple-chat-backend/src/service/router.ts` to remove this import:
 
@@ -183,16 +189,6 @@ and add this import instead:
 
 ```typescript
 import { MiddlewareFactory } from '@backstage/backend-app-api';
-```
-
-#### Enablement Step 5
-
-Due to an upstream change, there's currently [a bug](https://issues.redhat.com/browse/RHIDP-2945) preventing the `export-dynamic-plugin` command to work properly with the latest `@backstage/backend-plugin-api` version.  This can be worked around by fixing the version of this dependency.  To be on the safe side, update the `dependencies` section of `plugins/simple-chat-backend/package.json` like so:
-
-```json
-"@backstage/backend-common": "0.21.7",
-"@backstage/backend-plugin-api": "0.6.18",
-"@backstage/backend-app-api": "0.7.2",
 ```
 
 These correspond to the versions of the packages released with Backstage 1.26.5.
@@ -382,11 +378,13 @@ If everything has worked properly the new instance of Developer Hub should conta
 If there's a need to rebuild the plugins and redeploy the existing scripts can be used.  The development loop at this point looks like:
 
 Rebuild everything:
+
 ```bash
 yarn install && yarn run tsc && yarn run build:all && yarn run export-dynamic
 ```
 
 Stage the `.tar.gz` files:
+
 ```bash
 bash ./01-stage-dynamic-plugins.sh
 ```
@@ -400,3 +398,22 @@ bash ./03-update-plugin-registry.sh
 ### Migrate generated app to Yarn v3
 
 Out of the box the `create-app` command sets up a Yarn v1 project, which quickly becomes troublesome as this version is almost unmaintained.  A good option is to migrate the project to Yarn v3 as discussed in the Backstage documentation [here](https://backstage.io/docs/tutorials/yarn-migration/).  This project has been migrated to use Yarn v3 now.
+
+### Using a container image for local development
+
+> Note: While it is possible to run Red Hat Developer Hub outside of Openshift using podman for local development purposes, this method of running Developer Hub is not currently supported for production deployments; only a Red Hat Developer Hub instance installed via the Helm chart or operator is supported for production usage
+
+It's possible to run the RHDH container locally and is handy for developing dynamic plugin.  First extract each .tgz file under the `deploy` directory, each time rename the `package` directory to the plugin name.  Then remove the .tgz files, so the contents of the deploy directory would look like:
+
+```text
+internal-backstage-plugin-simple-chat-backend-dynamic
+internal-backstage-plugin-simple-chat-dynamic
+```
+
+Then use the `appendix-run-container.sh` script to start Developer Hub:
+
+```bash
+bash ./appendix-run-container.sh
+```
+
+The Simple Chat plugin should be loaded and available on the sidebar after logging in as guest.
