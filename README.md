@@ -416,4 +416,4 @@ Then use the `appendix-run-container.sh` script to start Developer Hub:
 bash ./appendix-run-container.sh
 ```
 
-The Simple Chat plugin should be loaded and available on the sidebar after logging in as guest.
+The app should be available at http://localhost:7007 and the Simple Chat plugin should be loaded and available on the sidebar after logging in as guest.
