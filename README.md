@@ -75,11 +75,7 @@ auth:
 
 #### Bootstrapping Step 4
 
-Now the backend plugin can be bootstrapped.  Run `yarn new` and select `backend-plugin`.  When prompted for a name specify `simple-chat`.  This will generate some example backend plugin code and add this plugin as a dependency to `packages/backend/package.json`.  The backend app however still needs to be updated to load this new backend plugin, add this line to `packages/backend/src/index.ts`:
-
-```typescript
-backend.add(import('@internal/backstage-plugin-simple-chat-backend'));
-```
+Now the backend plugin can be bootstrapped.  Run `yarn new` and select `backend-plugin`.  When prompted for a name specify `simple-chat`.  This will generate some example backend plugin code and add this plugin as a dependency to `packages/backend/package.json`.
 
 The end result of all of this should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/5d31fc3cb9b4a02e8d6dc51b5589ae95097657db) and the example backend endpoint should be accessible via `curl` when `yarn start` from `plugins/simple-chat-backend`
 
