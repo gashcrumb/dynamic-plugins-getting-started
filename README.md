@@ -75,11 +75,7 @@ auth:
 
 #### Bootstrapping Step 4
 
-Now the backend plugin can be bootstrapped.  Run `yarn new` and select `backend-plugin`.  When prompted for a name specify `simple-chat`.  This will generate some example backend plugin code and add this plugin as a dependency to `packages/backend/package.json`.  The backend app however still needs to be updated to load this new backend plugin, add this line to `packages/backend/src/index.ts`:
-
-```typescript
-backend.add(import('@internal/backstage-plugin-simple-chat-backend'));
-```
+Now the backend plugin can be bootstrapped.  Run `yarn new` and select `backend-plugin`.  When prompted for a name specify `simple-chat`.  This will generate some example backend plugin code and add this plugin as a dependency to `packages/backend/package.json`.
 
 The end result of all of this should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/5d31fc3cb9b4a02e8d6dc51b5589ae95097657db) and the example backend endpoint should be accessible via `curl` when `yarn start` from `plugins/simple-chat-backend`
 
@@ -89,6 +85,12 @@ The frontend plugin can now be bootstrapped.  Run `yarn new` and select `plugin`
 
 ```typescript
  <SidebarItem icon={ChatIcon} to="simple-chat" text="Simple Chat" />
+```
+
+Import `ChatIcon` from '@backstage/core-components'
+
+```typescript
+ ChatIcon
 ```
 
 Once completed, the end result should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/0aa89cdfaae84d42366aca0ac8fa018a187cabba).  Do a rebuild with `yarn run tsc && yarn run build:all` and then the generated frontend plugin should be visible in the UI when running `yarn start` from the root of the repo.
@@ -142,7 +144,7 @@ The next job is to update the `scripts` section of the `package.json` files for 
 Add the following to the `scripts` section of `plugins/simple-chat-backend/package.json`:
 
 ```json
- "export-dynamic": "janus-cli package export-dynamic-plugin"
+"export-dynamic": "janus-cli package export-dynamic-plugin"
 ```
 
 #### Enablement Step 3
@@ -234,7 +236,12 @@ Deploying a dynamic plugin to Developer Hub involves exporting a special build o
 
 #### Deployment Step 1
 
-Create a directory to put the `.tar.gz` files into called `deploy` and add a `.gitkeep` file to it.  Update the `.gitignore` file as well to ignore `.tar.gz` files:
+Create a directory to put the `.tar.gz` files into called `deploy` and add a `.gitkeep` file to it.  
+```text
+mkdir deploy && touch deploy/.gitkeep
+```
+
+Update the `.gitignore` file as well to ignore `.tar.gz` files:
 
 ```text
 deploy/*.tgz
@@ -246,6 +253,20 @@ Make sure to build everything at this point, often it's easiest to run a chain o
 
 ```text
 yarn install && yarn run tsc && yarn run build:all && yarn run export-dynamic
+```
+
+Download script files:
+
+```bash
+curl --output 01-stage-dynamic-plugins.sh  https://raw.githubusercontent.com/gashcrumb/dynamic-plugins-getting-started/main/01-stage-dynamic-plugins.sh
+```
+
+```bash
+curl --output 02-create-plugin-registry.sh  https://raw.githubusercontent.com/gashcrumb/dynamic-plugins-getting-started/main/02-create-plugin-registry.sh
+```
+
+```bash
+curl --output 03-update-plugin-registry.sh  https://raw.githubusercontent.com/gashcrumb/dynamic-plugins-getting-started/main/03-update-plugin-registry.sh
 ```
 
 And then use the `01-stage-dynamic-plugins.sh` script to pack the plugins into `.tar.gz` files and display their integrity hashes:
