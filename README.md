@@ -144,7 +144,7 @@ The next job is to update the `scripts` section of the `package.json` files for 
 Add the following to the `scripts` section of `plugins/simple-chat-backend/package.json`:
 
 ```json
- "export-dynamic": "janus-cli package export-dynamic-plugin"
+"export-dynamic": "janus-cli package export-dynamic-plugin"
 ```
 
 #### Enablement Step 3
