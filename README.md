@@ -87,6 +87,12 @@ The frontend plugin can now be bootstrapped.  Run `yarn new` and select `plugin`
  <SidebarItem icon={ChatIcon} to="simple-chat" text="Simple Chat" />
 ```
 
+Import `ChatIcon` from '@backstage/core-components'
+
+```typescript
+ ChatIcon
+```
+
 Once completed, the end result should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/0aa89cdfaae84d42366aca0ac8fa018a187cabba).  Do a rebuild with `yarn run tsc && yarn run build:all` and then the generated frontend plugin should be visible in the UI when running `yarn start` from the root of the repo.
 
 ### Phase 2 - Plugin Implementation
