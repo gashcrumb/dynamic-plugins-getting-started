@@ -236,7 +236,12 @@ Deploying a dynamic plugin to Developer Hub involves exporting a special build o
 
 #### Deployment Step 1
 
-Create a directory to put the `.tar.gz` files into called `deploy` and add a `.gitkeep` file to it.  Update the `.gitignore` file as well to ignore `.tar.gz` files:
+Create a directory to put the `.tar.gz` files into called `deploy` and add a `.gitkeep` file to it.  
+```text
+mkdir deploy && touch deploy/.gitkeep
+```
+
+Update the `.gitignore` file as well to ignore `.tar.gz` files:
 
 ```text
 deploy/*.tgz
@@ -248,6 +253,20 @@ Make sure to build everything at this point, often it's easiest to run a chain o
 
 ```text
 yarn install && yarn run tsc && yarn run build:all && yarn run export-dynamic
+```
+
+Download script files:
+
+```bash
+curl --output 01-stage-dynamic-plugins.sh  https://raw.githubusercontent.com/gashcrumb/dynamic-plugins-getting-started/main/01-stage-dynamic-plugins.sh
+```
+
+```bash
+curl --output 02-create-plugin-registry.sh  https://raw.githubusercontent.com/gashcrumb/dynamic-plugins-getting-started/main/02-create-plugin-registry.sh
+```
+
+```bash
+curl --output 03-update-plugin-registry.sh  https://raw.githubusercontent.com/gashcrumb/dynamic-plugins-getting-started/main/03-update-plugin-registry.sh
 ```
 
 And then use the `01-stage-dynamic-plugins.sh` script to pack the plugins into `.tar.gz` files and display their integrity hashes:
