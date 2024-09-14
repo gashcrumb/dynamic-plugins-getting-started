@@ -210,18 +210,18 @@ export const ChatIcon = ChatIconBackstage;
 Finally, the frontend plugin should include some basic configuration so that it will be visible in the Developer Hub app.  The convention currently is to put this into an `app-config.janus-idp.yaml` file.  Create the file `plugins/simple-chat/app-config.janus-idp.yaml` and add the following:
 
 ```yaml
-dynamicPlugins:
-  frontend:
-    internal.backstage-plugin-simple-chat:
-      appIcons:
-        - name: chatIcon
-          importName: ChatIcon
-      dynamicRoutes:
-        - path: /simple-chat
-          importName: SimpleChatPage
-          menuItem:
-            text: 'Simple Chat'
-            icon: chatIcon
+    dynamicPlugins:
+      frontend:
+        internal.backstage-plugin-simple-chat:
+          appIcons:
+          - name: chatIcon
+            importName: ChatIcon
+          dynamicRoutes:
+          - path: /simple-chat
+            importName: SimpleChatPage
+            menuItem:
+              text: 'Simple Chat'
+              icon: chatIcon
 ```
 
 While this is not currently used by any of the tooling, this still serves as a reference for plugin installers.
