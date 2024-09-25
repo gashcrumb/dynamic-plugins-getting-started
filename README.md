@@ -173,9 +173,16 @@ export function createAcmeExampleAction() {
         type: 'object',
         properties: {
           owner: {
-            title: 'Owner name',
+            title: 'Owner',
             description: 'This is the schema for our example output',
-            type: 'string',
+            type: 'object',
+            properties: {
+              name: {
+                title: 'Name',
+                description: 'This is the schema for our example output',
+                type: 'string',
+              },
+            }
           },
         },
       }
