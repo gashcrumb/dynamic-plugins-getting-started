@@ -182,14 +182,14 @@ export function createAcmeExampleAction() {
     },
     async handler(ctx) {
       ctx.logger.info(
-        `Running example template with parameters: ${ctx.input.myParameter}`,
+        `Running example template with parameter: ${ctx.input.myParameter}`,
       );
 
       //dummy timeout
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       //dummy output
-      ctx.output('owner', 'Vinicius Ferraz');
+      ctx.output('owner', {"name":"Vinicius Ferraz"});
     },
   });
 }
