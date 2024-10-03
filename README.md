@@ -39,6 +39,7 @@ Create a new Backstage app using a version of `create-app` that correlates to th
 ```text
 RHDH 1.1 -> Backstage 1.23.4 -> create-app 0.5.11
 RHDH 1.2 -> Backstage 1.26.5 -> create-app 0.5.14
+RHDH 1.3 -> Backstage 1.29.2 -> create-app 0.5.17
 ```
 
 So for Developer Hub 1.2 run:
