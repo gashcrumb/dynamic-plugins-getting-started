@@ -11,6 +11,10 @@ BACKEND_INTEGRITY_HASH=$(npm pack plugins/simple-chat-backend/dist-dynamic --pac
 FRONTEND_INTEGRITY_HASH=$(npm pack plugins/simple-chat/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity') &&
     echo "Frontend plugin integrity Hash: $FRONTEND_INTEGRITY_HASH"
 
+ACTIONS_INTEGRITY_HASH=$(npm pack plugins/scaffolder-backend-module-simple-chat/dist-dynamic --pack-destination $DYNAMIC_PLUGIN_ROOT_DIR --json | jq -r '.[0].integrity') &&
+    echo "Actions plugin integrity Hash: $ACTIONS_INTEGRITY_HASH"
+
+
 echo ""
 echo "Plugin .tgz files:"
 ls -l $DYNAMIC_PLUGIN_ROOT_DIR

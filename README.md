@@ -96,6 +96,117 @@ Import `ChatIcon` from '@backstage/core-components'
 
 Once completed, the end result should look similar to [this commit](https://github.com/gashcrumb/dynamic-plugins-getting-started/commit/0aa89cdfaae84d42366aca0ac8fa018a187cabba).  Do a rebuild with `yarn run tsc && yarn run build:all` and then the generated frontend plugin should be visible in the UI when running `yarn start` from the root of the repo.
 
+#### Bootstrapping Step 6
+
+The custom actions plugin can now be bootstrapped.  Run `yarn new` and select `scaffolder-module`.  When prompted for a name, specify `simple-chat` This will generate some starting code. For now, delete `example.test.ts`.
+
+Export custom action module: Update `plugins/scaffolder-backend-module-simple-chat/src/index.ts`
+
+```typescript
+export { scaffolderModule as default } from './actions/example/module';
+
+```
+
+Registering Custom Actions: Update `packages/backend/src/index.ts` 
+
+```typescript
+// custom actions
+backend.add(import('@internal/backstage-plugin-scaffolder-backend-module-simple-chat'));
+
+```
+
+
+
+It's possible to test running `yarn dev` in the root directory and access `http://localhost:3000/create/actions` to see `acme:example` as `Installed actions`
+
+Improving `acme:example` example:
+
+Update `plugins/scaffolder-backend-module-simple-chat/src/actions/example/example.ts` content file with:
+
+```typescript
+import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
+
+import yaml from 'yaml';
+
+const id = 'acme:example';
+
+const examples = [
+  {
+    description: 'Description of my action example',
+    example: yaml.stringify({
+      steps: [
+        {
+          id: 'acme:example',
+          action: id,
+          name: 'Name of my example',
+          input: {
+            myParameter: 'My Parameter Value'
+          },
+        },
+      ],
+    }),
+  },
+];
+
+
+export function createAcmeExampleAction() {
+  // For more information on how to define custom actions, see
+  //   https://backstage.io/docs/features/software-templates/writing-custom-actions
+  return createTemplateAction<{
+    myParameter: string;
+  }>({
+    id: id,
+    examples: examples,
+    description: 'Runs Yeoman on an installed Yeoman generator',
+    schema: {
+      input: {
+        type: 'object',
+        required: ['myParameter'],
+        properties: {
+          myParameter: {
+            title: 'An example parameter',
+            description: 'This is the schema for our example parameter',
+            type: 'string',
+          },
+        },
+      },
+      output: {
+        type: 'object',
+        properties: {
+          owner: {
+            title: 'Owner',
+            description: 'This is the schema for our example output',
+            type: 'object',
+            properties: {
+              name: {
+                title: 'Name',
+                description: 'This is the schema for our example output',
+                type: 'string',
+              },
+            }
+          },
+        },
+      }
+    },
+    async handler(ctx) {
+      ctx.logger.info(
+        `Running example template with parameter: ${ctx.input.myParameter}`,
+      );
+
+      //dummy timeout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      //dummy output
+      ctx.output('owner', {"name":"Vinicius Ferraz"});
+    },
+  });
+}
+
+
+```
+
+
+
 ### Phase 2 - Plugin Implementation
 
 At this point it's time to develop the actual plugin functionality.  The example app will be a very simple chat application, with the username derived from the logged in user's identity.  The backend in this first implementation will simply keep a store of chat messages in-memory.  The frontend UI will just poll for chat messages and show a list of them, and offer a text input field that the user can send new messages with, using the Enter key.
@@ -157,6 +268,15 @@ Add the following to the `scripts` section of `plugins/simple-chat/package.json`
 ```
 
 #### Enablement Step 4
+
+Add the following to the `scripts` section of `plugins/scaffolder-backend-module-simple-chat/package.json`:
+
+```json
+"export-dynamic": "janus-cli package export-dynamic-plugin"
+```
+
+
+#### Enablement Step 5
 
 Update the root `package.json` file to make it easy to run the `export-dynamic` command from the root of the repository by adding one of the following to the `scripts` section:
 
