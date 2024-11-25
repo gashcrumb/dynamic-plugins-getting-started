@@ -28,13 +28,13 @@ The commands used for deployment were developed with the bash shell in mind on L
 
 This guide is broken up into four top-level phases, bootstrapping the project and getting it ready, implementing the demo functionality, preparing and exporting the plugins as dynamic plugins and finally deploying to OpenShift and configuring Developer Hub to load the plugins.
 
-> Note: If you're just interested in a method to deploy a dynamic plugin to Developer Hub you can skip straight to [to this section](#phase-4---dynamic-plugin-deployment)
+> Note: If you're just interested in a method to deploy a dynamic plugin to Developer Hub you can skip straight to [to this section](#phase-4---dynamic-plugin-deployment) for OpenShift, or using [RHDH local](#using-rhdh-local), and finally [using podman](#using-a-container-image-for-local-development) to directly run the container.
 
 ### Phase 1 - Project Bootstrapping
 
 #### Bootstrapping Step 1
 
-Create a new Backstage app using a version of `create-app` that correlates to the Backstage version that the target Developer Hub is running.  There is a little matrix of versions to be aware of:
+Create a new Backstage app using a version of `create-app` that correlates to the Backstage version that the target Developer Hub is running.  There is a [matrix of versions](https://github.com/janus-idp/backstage-showcase/blob/main/docs/dynamic-plugins/versions.md#version-compatibility-matrix) to be aware of:
 
 ```text
 RHDH 1.1 -> Backstage 1.23.4 -> create-app 0.5.11
@@ -439,3 +439,39 @@ bash ./appendix-run-container.sh
 ```
 
 The app should be available at http://localhost:7007 and the Simple Chat plugin should be loaded and available on the sidebar after logging in as guest.
+
+### Using rhdh-local
+
+Copy the .tzg files from the `deploy` directory into the `local-plugins` directory of your [rhdh-local](https://github.com/redhat-developer/rhdh-local#test-locally-with-red-hat-developer-hub) clone.
+
+The plugins in this getting started guide were originally built against RHDH 1.2, however they will also work as-is in RHDH 1.3.  Use the following image tag in the `.env` file:
+
+```bash
+RHDH_IMAGE=quay.io/rhdh/rhdh-hub-rhel9:1.3
+```
+
+Configure the plugins to load in `configs/dynamic-plugins.yaml` replacing BACKEND_INTEGRITY and FRONTEND_INTEGRITY with the integrity hash values printed by `01-stage-dynamic-plugins.sh`:
+
+```yaml
+plugins:
+  - package: /opt/app-root/src/local-plugins/internal-backstage-plugin-simple-chat-backend-dynamic-0.1.0.tgz
+    integrity: ${BACKEND_INTEGRITY}
+    disabled: false
+    pluginConfig: {}
+  - package: /opt/app-root/src/local-plugins/internal-backstage-plugin-simple-chat-dynamic-0.1.0.tgz
+    integrity: ${FRONTEND_INTEGRITY}
+    disabled: false
+    pluginConfig:
+      dynamicPlugins:
+        frontend:
+          internal.backstage-plugin-simple-chat:
+            appIcons:
+              - name: chatIcon
+                importName: ChatIcon
+            dynamicRoutes:
+              - path: /simple-chat
+                importName: SimpleChatPage
+                menuItem:
+                  text: 'Simple Chat'
+                  icon: chatIcon      
+```
