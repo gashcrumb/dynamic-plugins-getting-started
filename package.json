@@ -6,24 +6,14 @@
     "node": "18 || 20"
   },
   "scripts": {
-    "dev": "concurrently \"yarn start\" \"yarn start-backend\"",
-    "start": "yarn workspace app start",
-    "start-backend": "yarn workspace backend start",
-    "build:backend": "yarn workspace backend build",
-    "build:all": "backstage-cli repo build --all",
-    "build-image": "yarn workspace backend build-image",
+    "build": "backstage-cli repo build --all",
     "tsc": "tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
-    "test": "backstage-cli repo test",
-    "test:all": "backstage-cli repo test --coverage",
-    "test:e2e": "playwright test",
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
-    "prettier:check": "prettier --check .",
-    "new": "backstage-cli new --scope internal",
-    "export-dynamic": "yarn workspaces foreach -A run export-dynamic"
+    "prettier:check": "prettier --check ."
   },
   "workspaces": {
     "packages": [
@@ -32,9 +22,8 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.26.3",
-    "@backstage/e2e-test-utils": "^0.1.1",
-    "@janus-idp/cli": "^1.13.1",
+    "@backstage/cli": "0.30.0",
+    "@backstage/e2e-test-utils": "0.1.1",
     "@playwright/test": "^1.32.3",
     "@spotify/prettier-config": "^12.0.0",
     "concurrently": "^8.0.0",
@@ -57,5 +46,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@3.8.3"
+  "packageManager": "yarn@4.3.1"
 }
