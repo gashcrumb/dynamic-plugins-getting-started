@@ -1,11 +1,11 @@
 app:
   title: Developer Hub Dynamic Plugins Getting Started
-  baseUrl: http://grouchy:7007
+  baseUrl: http://localhost:7007
 backend:
   auth:
     keys:
       - secret: development
-  baseUrl: http://grouchy:7007
+  baseUrl: http://localhost:7007
   csp:
     connect-src: ["'self'", 'http:', 'https:']
     upgrade-insecure-requests: false
