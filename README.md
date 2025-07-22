@@ -83,101 +83,73 @@ Developer Hub will now be running and you can access the simple-chat plugin at <
 
 ![A screen shot of the simple chat plugin UI](images/simple-chat.png)
 
-## Deploying to OpenShift with an OCI Registry
+## Deploying to OpenShift using Quay.io
 
-This workflow packages your plugins as OCI artifacts and pushes them to the internal OpenShift image registry.
+This workflow packages your plugins as OCI artifacts and pushes them to a public `quay.io` repository. These instructions assume you have:
 
-### Package and Push All Workspace Plugins
+- A Quay.io account.
+- Created a namespace called "rhdh" in your OpenShift cluster.
+- Deployed Developer Hub to the "rhdh" namespace using the operator.
 
-You will now package all plugins in your workspace into a single OCI artifact and push it to the OpenShift registry.
+> **Note:** This guide uses a public Quay.io repository for simplicity. If you use a private repository, you must create an image pull secret in your OpenShift project and link it to the `backstage-backend` service account.
 
-1. **Expose and log in to the OpenShift Registry:**
+### Step 1: Package and Push Plugins to Quay.io
+
+1. **Log in to Quay.io:**
+
+    Use `podman` or `docker` to log in to your Quay.io account.
 
     ```bash
-    # Expose the internal registry via a Route
-    oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge
-
-    # Get the registry hostname
-    REGISTRY_HOST=$(oc get route default-route -n openshift-image-registry --template='{{ .spec.host }}')
-
-    # Log in to the registry (using podman or docker)
-    podman login -u $(oc whoami) -p $(oc whoami --show-token) $REGISTRY_HOST
+    podman login quay.io
     ```
 
-2. **Package and push all plugins:**
-    Run the package command from the root of your project. It will iterate through all plugins in the workspace, package them into one container image, push it to the registry, and print the resulting YAML configuration.
-  
-    **IMPORTANT**: Replace "my-developer-hub-project" with your OpenShift project's namespace.
+2. **Package all plugins:**
+
+    Run the package command from the root of your project. This will build the plugins, package them into a container image, and print the YAML configuration needed for Developer Hub.
+
+    **IMPORTANT**: Replace `<your-quay-username>` with your Quay.io username.
 
     ```bash
-    # Package and push all workspace plugins into a single OCI artifact
+    # Set your Quay.io username
+    export QUAY_USERNAME=<your-quay-username>
+
+    # Package all workspace plugins into a single OCI artifact
     npx -y @red-hat-developer-hub/cli plugin package \
-      --tag $REGISTRY_HOST/my-developer-hub-project/simple-chat:latest
+      --tag quay.io/$QUAY_USERNAME/simple-chat:latest
     ```
 
-    **Copy the entire YAML output from the command.** You will paste it directly into your ConfigMap in the next step.
+    **Copy the entire `plugins:` YAML block from the command's output.** You will paste it into your ConfigMap in the next step.
 
-### Configure Dynamic Plugins in Red Hat Developer Hub
+3. **Push the OCI artifact:**
 
-Create a ConfigMap that tells Developer Hub where to find the OCI artifact and contains all the necessary plugin metadata.
-
-1. **Create** `dynamic-plugins-rhdh.yaml`:
-
-   Create a file with this name and paste the configuration you copied from the plugin package command in the previous step. The CLI output includes the package locations, integrity hashes, and all frontend configuration.
-
-   ```yaml
-   \# dynamic-plugins-rhdh.yaml
-   kind: ConfigMap
-   apiVersion: v1
-   metadata:
-     name: dynamic-plugins-rhdh
-   data:
-     dynamic-plugins.yaml: |
-       includes:
-         - dynamic-plugins.default.yaml
-       plugins:
-         \# PASTE THE ENTIRE 'plugins:' YAML BLOCK OUTPUT FROM THE CLI HERE.
-         \# The output will look similar to this example:
-         \#
-         \# - package: oci://image-registry.openshift-image-registry.svc:5000/my-project/dynamic-plugins:latest!internal-backstage-plugin-simple-chat
-         \#   disabled: false
-         \#   pluginConfig:
-         \#     dynamicPlugins:
-         \#       frontend:
-         \#         internal.backstage-plugin-simple-chat:
-         \#           appIcons:
-         \#             - name: chatIcon
-         \#               importName: ChatIcon
-         \#           dynamicRoutes:
-         \#             - path: /simple-chat
-         \#               importName: SimpleChatPage
-         \#               menuItem:
-         \#                 text: Simple Chat
-         \#                 icon: chatIcon
-         \# - package: oci://image-registry.openshift-image-registry.svc:5000/my-project/dynamic-plugins:latest!internal-backstage-plugin-simple-chat-backend
-         \#   disabled: false
-    ```
-
-2. **Apply the ConfigMap** to your cluster:
+    Push the container image to your Quay.io repository.
 
     ```bash
-    oc apply -f dynamic-plugins-rhdh.yaml
+    podman push quay.io/$QUAY_USERNAME/simple-chat:latest
     ```
 
-### Update the Developer Hub CR
+    After pushing, ensure the repository is marked as "Public" in the Quay.io web interface.
 
-Finally, edit the backstage Custom Resource (CR) to reference your new ConfigMap. This will trigger a redeployment of your Developer Hub instance with the new plugins enabled.
+### Step 2: Configure Dynamic Plugins in Red Hat Developer Hub
 
-```bash
-oc edit backstage backstage
-```
+Create a ConfigMap that tells Developer Hub where to find the OCI artifact.
 
-Modify the spec.application section to point to your dynamic plugins configuration:
+1. **Create `dynamic-plugins-rhdh.yaml`:**
 
-```yaml
-spec:
-  application:
-    dynamicPluginsConfigMapName: dynamic-plugins-rhdh
-```
+    Create a file with this name and paste the configuration you copied from the `plugin package` command. The CLI output includes the correct package locations, integrity hashes, and frontend configuration.
+
+    ```yaml
+    # dynamic-plugins-rhdh.yaml
+    kind: ConfigMap
+    apiVersion: v1
+    metadata:
+      name: dynamic-plugins-rhdh
+    data:
+      dynamic-plugins.yaml: |
+        includes:
+          - dynamic-plugins.default.yaml
+        plugins:
+          # PASTE THE 'plugins:' YAML BLOCK OUTPUT FROM THE CLI HERE.
+          # The output will look similar to this example.
 
 Once Developer Hub has redeployed, the "Simple Chat" plugin will appear in the sidebar.
