@@ -35,7 +35,7 @@ node_modules/
 dist
 dist-types
 dist-dynamic
-deploy/*
+dynamic-plugins-root/*
 
 # Temporary change files created by Vim
 *.swp

@@ -1,0 +1,31 @@
+app:
+  title: Developer Hub Dynamic Plugins Getting Started
+  baseUrl: http://grouchy:7007
+backend:
+  auth:
+    keys:
+      - secret: development
+  baseUrl: http://grouchy:7007
+  csp:
+    connect-src: ["'self'", 'http:', 'https:']
+    upgrade-insecure-requests: false
+  cors:
+    origin: ${BASE_URL}
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations: {}
+proxy:
+  endpoints: {}
+auth:
+  environment: development
+  providers:
+    guest:
+      dangerouslyAllowOutsideDevelopment: true
+
+dynamicPlugins:
+  rootDirectory: dynamic-plugins-root
+  

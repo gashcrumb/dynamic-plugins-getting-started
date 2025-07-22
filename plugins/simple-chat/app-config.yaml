@@ -1,6 +1,6 @@
 dynamicPlugins:
   frontend:
-    internal.backstage-plugin-simple-chat:
+    red-hat-developer-hub.backstage-plugin-simple-chat:
       appIcons:
         - name: chatIcon
           importName: ChatIcon
