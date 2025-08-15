@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { simpleChatApiRef } from '../../api/types';
 import { useApi } from '@backstage/core-plugin-api';
 import Box from '@mui/material/Box';

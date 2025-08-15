@@ -1,4 +1,3 @@
-import React from 'react';
 import { useChatMessages } from '../../hooks/useChatMessages';
 
 export const ChatMessageDisplay = () => {

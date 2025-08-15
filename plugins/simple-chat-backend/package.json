@@ -11,7 +11,12 @@
     "types": "dist/index.d.ts"
   },
   "backstage": {
-    "role": "backend-plugin"
+    "role": "backend-plugin",
+    "pluginId": "simple-chat",
+    "pluginPackages": [
+      "@red-hat-developer-hub/backstage-plugin-simple-chat",
+      "@red-hat-developer-hub/backstage-plugin-simple-chat-backend"
+    ]
   },
   "scripts": {
     "start": "backstage-cli package start",

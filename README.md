@@ -8,9 +8,9 @@ This guide assumes you have a foundational understanding of Backstage plugin dev
 
 This project is aligned with **Red Hat Developer Hub 1.6**. When creating a new project from scratch, use the corresponding create-app version to ensure compatibility.
 
-| **Developer Hub Version** | **Backstage Version** | **@backstage/create-app Version** |
-| :--------------: | :-------------------: | :-------------------------------: |
-| **1.6** | **1.36.1** | **0.6.12** |
+| **Developer Hub Version** | **Backstage Version** | 
+| :--------------: | :-------------------: |
+| **1.6** | **1.36.1** |
 
 ## Prerequisites
 
@@ -153,3 +153,29 @@ Create a ConfigMap that tells Developer Hub where to find the OCI artifact.
           # The output will look similar to this example.
 
 Once Developer Hub has redeployed, the "Simple Chat" plugin will appear in the sidebar.
+
+## New frontend system support
+
+The frontend plugin for this example also includes support for the new frontend system.  The frontend plugin can be built and loaded into the new frontend system via the [frontend-dynamic-feature-loader](https://github.com/backstage/backstage/tree/master/packages/frontend-dynamic-feature-loader) package.
+
+To build and load the new frontend system plugin, cd to `plugins/simple-chat` after building the entire project and run the following:
+
+```bash
+yarn build --role frontend-dynamic-container
+```
+
+Copy the entire plugin directory to the `dynamic-plugins-root` folder of your Developer Hub installation:
+
+```bash
+# from plugins/simple-chat
+cp -R `pwd` $MY_RHDH_CLONE/dynamic-plugins-root
+```
+
+Run the Developer Hub backend with the `start:next` script, for example:
+
+```bash
+yarn workspace backend start:next
+```
+
+Access the app at "http://localhost:7007" and there should be a "Simple Chat" entry on the main navigation that brings you to the chat UI.
+

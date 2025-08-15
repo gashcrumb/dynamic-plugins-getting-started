@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { InfoCard, Header, Page, Content } from '@backstage/core-components';
 import { ChatMessageDisplay } from '../ChatMessageDisplay/ChatMessageDisplay';
 import { ChatMessageInput } from '../ChatMessageInput/ChatMessageInput';
