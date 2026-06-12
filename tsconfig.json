@@ -6,7 +6,10 @@
     "plugins/*/dev",
     "plugins/*/migrations"
   ],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules",
+    "plugins/simple-chat/src/alpha.tsx"
+  ],
   "compilerOptions": {
     "outDir": "dist-types",
     "rootDir": ".",

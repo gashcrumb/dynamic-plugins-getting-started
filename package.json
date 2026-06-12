@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "18 || 20"
+    "node": "20"
   },
   "scripts": {
     "build": "backstage-cli repo build --all",
@@ -13,7 +13,8 @@
     "fix": "backstage-cli repo fix",
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
-    "prettier:check": "prettier --check ."
+    "prettier:check": "prettier --check .",
+    "export-plugins": "npx -y @janus-idp/cli@3.2.0 package package-dynamic-plugins --force --export-to ./dynamic-plugins-root/"
   },
   "workspaces": {
     "packages": [
@@ -22,14 +23,13 @@
     ]
   },
   "devDependencies": {
-    "@backstage/cli": "^0.34.5",
-    "@backstage/e2e-test-utils": "^0.1.1",
+    "@backstage/cli": "0.29.6",
     "@spotify/prettier-config": "^12.0.0",
     "concurrently": "^8.0.0",
     "lerna": "^7.3.0",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~5.3.0"
+    "typescript": "5.7.3"
   },
   "resolutions": {
     "@types/react": "^18",
@@ -45,5 +45,5 @@
       "prettier --write"
     ]
   },
-  "packageManager": "yarn@4.3.1"
+  "packageManager": "yarn@3.8.7"
 }

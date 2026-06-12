@@ -12,8 +12,23 @@ export type PostMessageOptions = {
 
 export type GetMessagesOptions = {};
 
+export type ConfigProbeValues = {
+  probeString?: string;
+  appTitle: string;
+  backendBaseUrl: string;
+  authEnvironment?: string;
+};
+
+export type ConfigProbe = {
+  configReadCount: number;
+  configSameReference: boolean;
+  configValues: ConfigProbeValues;
+  heapUsedMb: number;
+};
+
 export type GetMessagesResult = {
   messages: ChatMessage[];
+  _configProbe?: ConfigProbe;
 };
 
 export interface SimpleChatApi {

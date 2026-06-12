@@ -1,9 +1,16 @@
-import { useChatMessages } from '../../hooks/useChatMessages';
+import { ChatMessage } from '../../api/types';
 
-export const ChatMessageDisplay = () => {
-  const { messages, error } = useChatMessages();
+type ChatMessageDisplayProps = {
+  messages?: ChatMessage[];
+  error?: Error;
+};
+
+export const ChatMessageDisplay = ({
+  messages,
+  error,
+}: ChatMessageDisplayProps) => {
   if (error) {
-    return <div>Error fetching messages: {`${error}`}</div>;
+    return <div>Error fetching messages: {error.message}</div>;
   }
   if (!messages || messages.length === 0) {
     return (
@@ -15,7 +22,7 @@ export const ChatMessageDisplay = () => {
   }
   return (
     <ul>
-      {messages?.map((msg, index) => (
+      {messages.map((msg, index) => (
         <li
           key={`chat-${index}`}
         >{`${msg.timestamp} - ${msg.nickname}: ${msg.message}`}</li>

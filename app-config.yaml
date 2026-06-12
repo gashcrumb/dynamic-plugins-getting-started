@@ -26,6 +26,12 @@ auth:
     guest:
       dangerouslyAllowOutsideDevelopment: true
 
+simpleChat:
+  configProbeString: >-
+    A moderately long config probe string for memory-leak testing. Repeating the
+    same value on every request should not allocate new backing storage if the
+    root Config object is stable and reads are cheap.
+
 dynamicPlugins:
   rootDirectory: dynamic-plugins-root
   

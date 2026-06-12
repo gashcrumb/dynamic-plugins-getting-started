@@ -2,7 +2,7 @@
 
 # --- Configuration ---
 # Backstage application image
-APP_IMAGE_DEFAULT="quay.io/rhdh/rhdh-hub-rhel9:next"
+APP_IMAGE_DEFAULT="quay.io/rhdh-community/rhdh:1.5.3"
 APP_IMAGE=${APP_IMAGE:-$APP_IMAGE_DEFAULT}
 
 # Dynamic plugins local directory
