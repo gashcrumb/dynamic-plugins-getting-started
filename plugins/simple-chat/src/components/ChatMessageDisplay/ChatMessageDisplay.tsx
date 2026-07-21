@@ -1,24 +1,27 @@
+import { Text } from '@backstage/ui';
 import { useChatMessages } from '../../hooks/useChatMessages';
 
 export const ChatMessageDisplay = () => {
   const { messages, error } = useChatMessages();
   if (error) {
-    return <div>Error fetching messages: {`${error}`}</div>;
+    return <Text color="danger">Error fetching messages: {`${error}`}</Text>;
   }
   if (!messages || messages.length === 0) {
     return (
-      <div>
+      <Text color="secondary">
         No messages to show yet, type a message in the input below to start
         chatting
-      </div>
+      </Text>
     );
   }
   return (
     <ul>
-      {messages?.map((msg, index) => (
-        <li
-          key={`chat-${index}`}
-        >{`${msg.timestamp} - ${msg.nickname}: ${msg.message}`}</li>
+      {messages.map((msg, index) => (
+        <li key={`chat-${index}`}>
+          <Text variant="body-medium">
+            {`${msg.timestamp} - ${msg.nickname}: ${msg.message}`}
+          </Text>
+        </li>
       ))}
     </ul>
   );

@@ -53,13 +53,11 @@ export class SimpleChatClient implements SimpleChatApi {
       method: 'POST',
       body,
     });
-    const data = await response.body;
     if (!response.ok) {
-      throw new Error(`${data}`);
+      throw new Error(`Failed to post message: ${response.statusText}`);
     }
-    return;
   }
-  
+
   async getMessages(_options: GetMessagesOptions): Promise<GetMessagesResult> {
     const { discoveryApi, fetchApi, identityApi, pluginId } = this;
     const baseUrl = await discoveryApi.getBaseUrl(pluginId);

@@ -1,4 +1,4 @@
-import { createApiRef } from '@backstage/core-plugin-api';
+import { createApiRef } from '@backstage/frontend-plugin-api';
 
 export type ChatMessage = {
   message: string;
@@ -22,5 +22,5 @@ export interface SimpleChatApi {
 }
 
 export const simpleChatApiRef = createApiRef<SimpleChatApi>({
-    id: 'simple-chat',
-})
+  id: 'plugin.simple-chat.service',
+});

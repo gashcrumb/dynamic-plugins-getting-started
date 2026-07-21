@@ -1,181 +1,95 @@
 # Getting Started with Dynamic Plugins for Red Hat Developer Hub
 
-This repository provides an up-to-date example for developing, building, and deploying dynamic plugins for Red Hat Developer Hub (Developer Hub). It demonstrates a complete workflow, from a local Backstage instance to a fully deployed dynamic plugin on an OpenShift cluster using modern tooling.
+This repository is a small **simple-chat** dynamic plugin example aligned with
+**Backstage 1.52** / current RHDH `next`. The frontend plugin targets the
+**Backstage new frontend system** only and ships standard Module Federation
+assets (no legacy `createPlugin` frontend packaging).
 
-This guide assumes you have a foundational understanding of Backstage plugin development. For a general introduction to creating plugins, please refer to the official [Backstage documentation](https://backstage.io/docs/plugins/create-a-plugin).
+For general Backstage plugin development background, see the
+[Backstage documentation](https://backstage.io/docs/plugins/create-a-plugin).
 
 ## Compatibility
 
-This project is aligned with **Red Hat Developer Hub 1.6**. When creating a new project from scratch, use the corresponding create-app version to ensure compatibility.
+| RHDH / image | Backstage | Node |
+| :----------: | :-------: | :--: |
+| `next` (BS 1.52 line) | **1.52.0** | 22 / 24 |
 
-| **Developer Hub Version** | **Backstage Version** | 
-| :--------------: | :-------------------: |
-| **1.6** | **1.36.1** |
+Package versions are pinned to match [redhat-developer/rhdh](https://github.com/redhat-developer/rhdh)
+at Backstage `1.52.0`.
 
 ## Prerequisites
 
-Ensure the following tools are installed on your system:
+- **Node.js** 22 or 24
+- **Yarn** 4.x (`corepack enable`)
+- **Podman** (or Docker) for local container testing
 
-- **Node.js**: ~20.x
-- **Yarn**: ~4.x
-- **oc**: The OpenShift CLI client.
-- An active OpenShift cluster with an operator-based installation of Red Hat Developer Hub.
-- Access to an OCI-compliant container registry (this guide will use the internal OpenShift registry).
-
-## The Dynamic Plugin Workflow
-
-Deploying a dynamic plugin involves a few key stages:
-
-1. **Develop**: Create your frontend and backend plugins within a standard Backstage application.
-2. **Package**: Use the `@red-hat-developer-hub/cli` tool to build and package the plugin either as an OCI artifact for a remote registry or as local files for testing.
-3. **Push & Host**: The packaged OCI artifact is pushed to a container registry accessible to your Developer Hub instance.
-4. **Configure**: Update your Developer Hub instance's configuration via a ConfigMap to instruct it to download and integrate your plugin from the registry.
-
-### Step 1: Build the Plugins
-
-First, ensure all dependencies are installed and the plugin source code is built.
+## Quick start
 
 ```bash
-# Install dependencies and build the project
 yarn install
 yarn tsc
 yarn build
-```
 
-## Local Development and Testing
-
-For the fastest development loop, you can export your plugins to a local directory and test them with different methods.
-
-### Export Plugins for Local Testing
-
-This initial step is the same for both local testing methods.
-
-Export all plugins to the local deploy directory:
-
-The --export-to flag will package all plugins in the workspace and place their assets in the specified directory. It's recommended to clean the deploy directory before exporting to ensure you don't have any stale artifacts.
-
-```bash
-# Clean the deployment directory
+# Clean and export dynamic plugin packages
 rm -rf ./dynamic-plugins-root/*
+yarn export-plugins
 
-# Export all workspace plugins to the deploy directory
-npx -y @red-hat-developer-hub/cli plugin package \
- --export-to ./dynamic-plugins-root
-```
-
-Now you can proceed with either method below.
-
-#### Method 1: Using rhdh-local
-
-Point `--export-to` to [rhdh-local's](https://github.com/redhat-developer/rhdh-local) "local-plugins" directory and update its dynamic-plugins.yaml using the suggested configuration created by the "plugin package" command.  Refer to the [rhdh-local documentation](https://github.com/redhat-developer/rhdh-local) for specific instructions.
-
-#### Method 2: Using Podman Directly
-
-You can run the Developer Hub container directly and mount your local plugins. This provides a quick feedback loop without needing [rhdh-local](https://github.com/redhat-developer/rhdh-local) or a full OpenShift deployment. This method uses the example `app-config.yaml` included in the root of this repository.
-
-The supplied script starts the container, mounts the dynamic-plugins-root directory and the repository's `app-config.yaml`, and overrides the entrypoint to use the custom config.
-
-```bash
+# Run against RHDH with the new frontend system enabled
 ./run-example.sh
 ```
 
-Developer Hub will now be running and you can access the simple-chat plugin at <http://localhost:7007/simple-chat>.
+Open [http://localhost:7007/simple-chat](http://localhost:7007/simple-chat).
 
-![A screen shot of the simple chat plugin UI](images/simple-chat.png)
+`run-example.sh` sets the temporary NFS enablement variables:
 
-## Deploying to OpenShift using Quay.io
+- `APP_CONFIG_app_packageName=app-next`
+- `ENABLE_STANDARD_MODULE_FEDERATION=true`
 
-This workflow packages your plugins as OCI artifacts and pushes them to a public `quay.io` repository. These instructions assume you have:
+Override the image with `APP_IMAGE=...` if needed (default:
+`quay.io/rhdh-community/rhdh:next`).
 
-- A Quay.io account.
-- Created a namespace called "rhdh" in your OpenShift cluster.
-- Deployed Developer Hub to the "rhdh" namespace using the operator.
-
-> **Note:** This guide uses a public Quay.io repository for simplicity. If you use a private repository, you must create an image pull secret in your OpenShift project and link it to the `backstage-backend` service account.
-
-### Step 1: Package and Push Plugins to Quay.io
-
-1. **Log in to Quay.io:**
-
-    Use `podman` or `docker` to log in to your Quay.io account.
-
-    ```bash
-    podman login quay.io
-    ```
-
-2. **Package all plugins:**
-
-    Run the package command from the root of your project. This will build the plugins, package them into a container image, and print the YAML configuration needed for Developer Hub.
-
-    **IMPORTANT**: Replace `<your-quay-username>` with your Quay.io username.
-
-    ```bash
-    # Set your Quay.io username
-    export QUAY_USERNAME=<your-quay-username>
-
-    # Package all workspace plugins into a single OCI artifact
-    npx -y @red-hat-developer-hub/cli plugin package \
-      --tag quay.io/$QUAY_USERNAME/simple-chat:latest
-    ```
-
-    **Copy the entire `plugins:` YAML block from the command's output.** You will paste it into your ConfigMap in the next step.
-
-3. **Push the OCI artifact:**
-
-    Push the container image to your Quay.io repository.
-
-    ```bash
-    podman push quay.io/$QUAY_USERNAME/simple-chat:latest
-    ```
-
-    After pushing, ensure the repository is marked as "Public" in the Quay.io web interface.
-
-### Step 2: Configure Dynamic Plugins in Red Hat Developer Hub
-
-Create a ConfigMap that tells Developer Hub where to find the OCI artifact.
-
-1. **Create `dynamic-plugins-rhdh.yaml`:**
-
-    Create a file with this name and paste the configuration you copied from the `plugin package` command. The CLI output includes the correct package locations, integrity hashes, and frontend configuration.
-
-    ```yaml
-    # dynamic-plugins-rhdh.yaml
-    kind: ConfigMap
-    apiVersion: v1
-    metadata:
-      name: dynamic-plugins-rhdh
-    data:
-      dynamic-plugins.yaml: |
-        includes:
-          - dynamic-plugins.default.yaml
-        plugins:
-          # PASTE THE 'plugins:' YAML BLOCK OUTPUT FROM THE CLI HERE.
-          # The output will look similar to this example.
-
-Once Developer Hub has redeployed, the "Simple Chat" plugin will appear in the sidebar.
-
-## New frontend system support
-
-The frontend plugin for this example also includes support for the new frontend system.  The frontend plugin can be built and loaded into the new frontend system via the [frontend-dynamic-feature-loader](https://github.com/backstage/backstage/tree/master/packages/frontend-dynamic-feature-loader) package.
-
-To build and load the new frontend system plugin, cd to `plugins/simple-chat` after building the entire project and run the following:
+### Local plugin start (no container)
 
 ```bash
-yarn build --role frontend-dynamic-container
+yarn workspace @red-hat-developer-hub/backstage-plugin-simple-chat start
 ```
 
-Copy the entire plugin directory to the `dynamic-plugins-root` folder of your Developer Hub installation:
+This uses `@backstage/frontend-defaults` `createApp` with a mock chat API.
+BUI styles are loaded from `dev/index.tsx` via `@backstage/ui/css/styles.css`
+(the host app is expected to provide those styles in real deployments).
+
+## Plugin layout
+
+```
+plugins/simple-chat/          # NFS frontend (src/alpha.tsx)
+plugins/simple-chat-backend/  # New backend system plugin
+```
+
+The frontend package exposes the new frontend system entry via `./alpha` and
+exports standard Module Federation assets (`dist/remoteEntry.js`). Extensions
+(page + API; nav is inferred from the page `title`/`icon`) are declared in
+`createFrontendPlugin` — no `dynamicPlugins.frontend` YAML wiring is required
+under `app-next`.
+
+## Packaging for OCI / rhdh-local
 
 ```bash
-# from plugins/simple-chat
-cp -R `pwd` $MY_RHDH_CLONE/dynamic-plugins-root
+# Local export (already covered above)
+yarn export-plugins
+
+# Or package as OCI
+export QUAY_USERNAME=<your-quay-username>
+npx -y @red-hat-developer-hub/cli@1.10.7 plugin package \
+  --tag quay.io/$QUAY_USERNAME/simple-chat:latest
+podman push quay.io/$QUAY_USERNAME/simple-chat:latest
 ```
 
-Run the Developer Hub backend with the `start:next` script, for example:
+Point [rhdh-local](https://github.com/redhat-developer/rhdh-local) at the
+exported plugins or OCI refs, and enable the new frontend system the same way
+(`app.packageName: app-next` + `ENABLE_STANDARD_MODULE_FEDERATION=true`).
 
-```bash
-yarn workspace backend start:next
-```
+## Feature-flag exploration
 
-Access the app at "http://localhost:7007" and there should be a "Simple Chat" entry on the main navigation that brings you to the chat UI.
-
+This branch (`feature-flag-exploration`) is the starting point for declaring a
+plugin-level feature flag and verifying it appears under
+**Settings → Feature Flags** in RHDH `app-next`.

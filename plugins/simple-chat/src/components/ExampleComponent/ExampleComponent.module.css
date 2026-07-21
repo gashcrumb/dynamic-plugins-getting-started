@@ -1,0 +1,18 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bui-space-4);
+  padding: var(--bui-space-4);
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.messagePane {
+  height: 30vh;
+  min-height: 12rem;
+  overflow: auto;
+  border: 1px solid var(--bui-border);
+  border-radius: var(--bui-radius-2);
+  background-color: var(--bui-bg-surface-1);
+  padding: var(--bui-space-3);
+}

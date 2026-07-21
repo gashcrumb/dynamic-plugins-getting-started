@@ -1,31 +1,30 @@
-import { useRef } from 'react';
+import { useState } from 'react';
+import { useApi } from '@backstage/frontend-plugin-api';
+import { TextField } from '@backstage/ui';
 import { simpleChatApiRef } from '../../api/types';
-import { useApi } from '@backstage/core-plugin-api';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
 
 export const ChatMessageInput = () => {
   const simpleChatApi = useApi(simpleChatApiRef);
-  const input = useRef<HTMLInputElement>();
+  const [message, setMessage] = useState('');
 
   return (
-    <>
-      <Box component="form" noValidate autoComplete="off">
-        <TextField
-          inputRef={input}
-          fullWidth
-          variant="outlined"
-          onKeyDown={async event => {
-            if (event.key === 'Enter') {
-              event.preventDefault();
-              await simpleChatApi.postMessage({
-                message: input.current!.value,
-              });
-              input.current!.value = '';
-            }
-          }}
-        />
-      </Box>
-    </>
+    <TextField
+      label="Message"
+      aria-label="Chat message"
+      placeholder="Type a message and press Enter"
+      value={message}
+      onChange={setMessage}
+      onKeyDown={async event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          const trimmed = message.trim();
+          if (!trimmed) {
+            return;
+          }
+          await simpleChatApi.postMessage({ message: trimmed });
+          setMessage('');
+        }
+      }}
+    />
   );
 };

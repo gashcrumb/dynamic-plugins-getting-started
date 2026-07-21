@@ -1,28 +1,34 @@
-import { ExampleComponent } from './ExampleComponent';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
 import {
-  setupRequestMockHandlers,
+  attachMockApiFactory,
   renderInTestApp,
-} from '@backstage/test-utils';
+} from '@backstage/frontend-test-utils';
+import { ExampleComponent } from './ExampleComponent';
+import {
+  ChatMessage,
+  GetMessagesOptions,
+  PostMessageOptions,
+  SimpleChatApi,
+  simpleChatApiRef,
+} from '../../api/types';
 
 describe('ExampleComponent', () => {
-  const server = setupServer();
-  // Enable sane handlers for network requests
-  setupRequestMockHandlers(server);
-
-  // setup mock response
-  beforeEach(() => {
-    server.use(
-      rest.get('/*', (_, res, ctx) => res(ctx.status(200), ctx.json({}))),
-    );
-  });
+  const messages: ChatMessage[] = [];
+  const mockedApi: SimpleChatApi = {
+    postMessage: async (options: PostMessageOptions) => {
+      messages.push({
+        nickname: 'test-user',
+        timestamp: '12:00:00 PM',
+        message: options.message || '',
+      });
+    },
+    getMessages: async (_options: GetMessagesOptions) => ({ messages }),
+  };
 
   it('should render', async () => {
-    await renderInTestApp(<ExampleComponent />);
-    expect(
-      screen.getByText('Welcome to simple-chat!'),
-    ).toBeInTheDocument();
+    await renderInTestApp(<ExampleComponent />, {
+      apis: [attachMockApiFactory(simpleChatApiRef, mockedApi)],
+    });
+    expect(screen.getByText('Welcome to simple-chat!')).toBeInTheDocument();
   });
 });
