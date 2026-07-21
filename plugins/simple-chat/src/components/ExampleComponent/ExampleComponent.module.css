@@ -7,7 +7,16 @@
   box-sizing: border-box;
 }
 
+.chatLayout {
+  display: flex;
+  flex-direction: row;
+  gap: var(--bui-space-3);
+  align-items: stretch;
+}
+
 .messagePane {
+  flex: 1;
+  min-width: 0;
   height: 30vh;
   min-height: 12rem;
   overflow: auto;

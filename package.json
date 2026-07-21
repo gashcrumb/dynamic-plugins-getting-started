@@ -14,7 +14,7 @@
     "lint": "backstage-cli repo lint --since origin/main",
     "lint:all": "backstage-cli repo lint",
     "prettier:check": "prettier --check .",
-    "export-plugins": "npx -y @red-hat-developer-hub/cli@1.10.7 plugin package --export-to ./dynamic-plugins-root/"
+    "export-plugins": "npx -y @red-hat-developer-hub/cli plugin package --export-to ./dynamic-plugins-root/"
   },
   "workspaces": {
     "packages": [

@@ -9,7 +9,10 @@ import {
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import { RiChat1Line } from '@remixicon/react';
-import { simpleChatApiRef } from './api/types';
+import {
+  SIMPLE_CHAT_USER_LIST_FLAG,
+  simpleChatApiRef,
+} from './api/types';
 import { SimpleChatClient } from './api/SimpleChatClient';
 
 const rootRouteRef = createRouteRef();
@@ -57,6 +60,13 @@ const simpleChatPage = PageBlueprint.make({
 export default createFrontendPlugin({
   pluginId: 'simple-chat',
   info: { packageJson: () => import('../package.json') },
+  featureFlags: [
+    {
+      name: SIMPLE_CHAT_USER_LIST_FLAG,
+      description:
+        'Show a side panel of users currently connected to the chat instance',
+    },
+  ],
   extensions: [simpleChatApi, simpleChatPage],
   routes: {
     root: rootRouteRef,

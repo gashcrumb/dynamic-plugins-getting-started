@@ -26,7 +26,7 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "export-dynamic": "npx -y @red-hat-developer-hub/cli@1.10.7 plugin export --clean"
+    "export-dynamic": "npx -y @red-hat-developer-hub/cli plugin export --clean"
   },
   "dependencies": {
     "@backstage/backend-plugin-api": "1.9.2",

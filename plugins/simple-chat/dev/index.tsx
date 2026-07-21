@@ -8,6 +8,7 @@ import {
 import simpleChatPlugin from '../src/alpha';
 import {
   ChatMessage,
+  ChatUser,
   GetMessagesOptions,
   PostMessageOptions,
   SimpleChatApi,
@@ -15,6 +16,9 @@ import {
 } from '../src/api/types';
 
 const messages: ChatMessage[] = [];
+const users = new Map<string, ChatUser>([
+  ['user:default/dev-user', { userEntityRef: 'user:default/dev-user' }],
+]);
 
 const mockedApi: SimpleChatApi = {
   postMessage: async (options: PostMessageOptions) => {
@@ -27,6 +31,8 @@ const mockedApi: SimpleChatApi = {
   getMessages: async (_options: GetMessagesOptions) => {
     return { messages };
   },
+  getUsers: async () => ({ users: Array.from(users.values()) }),
+  heartbeat: async () => undefined,
 };
 
 const simpleChatDevModule = createFrontendModule({

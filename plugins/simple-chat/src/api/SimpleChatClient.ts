@@ -6,6 +6,7 @@ import {
 import {
   GetMessagesOptions,
   GetMessagesResult,
+  GetUsersResult,
   PostMessageOptions,
   SimpleChatApi,
 } from './types';
@@ -41,14 +42,17 @@ export class SimpleChatClient implements SimpleChatApi {
     this.pluginId = options.pluginId;
   }
 
+  private async getBaseUrl() {
+    return this.discoveryApi.getBaseUrl(this.pluginId);
+  }
+
   async postMessage(options: PostMessageOptions): Promise<void> {
-    const { discoveryApi, fetchApi, identityApi, pluginId } = this;
-    const baseUrl = await discoveryApi.getBaseUrl(pluginId);
+    const baseUrl = await this.getBaseUrl();
     const nickname =
-      (await identityApi.getProfileInfo()).displayName || 'guest';
+      (await this.identityApi.getProfileInfo()).displayName || 'guest';
     const body = JSON.stringify({ ...options, nickname });
-    const headers = await getAuthorizationHeader(identityApi);
-    const response = await fetchApi.fetch(baseUrl, {
+    const headers = await getAuthorizationHeader(this.identityApi);
+    const response = await this.fetchApi.fetch(baseUrl, {
       headers,
       method: 'POST',
       body,
@@ -59,10 +63,9 @@ export class SimpleChatClient implements SimpleChatApi {
   }
 
   async getMessages(_options: GetMessagesOptions): Promise<GetMessagesResult> {
-    const { discoveryApi, fetchApi, identityApi, pluginId } = this;
-    const baseUrl = await discoveryApi.getBaseUrl(pluginId);
-    const response = await fetchApi.fetch(baseUrl, {
-      headers: await getAuthorizationHeader(identityApi),
+    const baseUrl = await this.getBaseUrl();
+    const response = await this.fetchApi.fetch(baseUrl, {
+      headers: await getAuthorizationHeader(this.identityApi),
       method: 'GET',
     });
     const data = await response.json();
@@ -70,5 +73,29 @@ export class SimpleChatClient implements SimpleChatApi {
       throw new Error(`${data.message}`);
     }
     return data;
+  }
+
+  async getUsers(): Promise<GetUsersResult> {
+    const baseUrl = await this.getBaseUrl();
+    const response = await this.fetchApi.fetch(`${baseUrl}/users`, {
+      headers: await getAuthorizationHeader(this.identityApi),
+      method: 'GET',
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message ?? response.statusText);
+    }
+    return data;
+  }
+
+  async heartbeat(): Promise<void> {
+    const baseUrl = await this.getBaseUrl();
+    const response = await this.fetchApi.fetch(`${baseUrl}/users/heartbeat`, {
+      headers: await getAuthorizationHeader(this.identityApi),
+      method: 'POST',
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to send heartbeat: ${response.statusText}`);
+    }
   }
 }

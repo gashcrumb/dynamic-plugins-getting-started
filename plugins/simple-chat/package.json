@@ -46,7 +46,7 @@
     "clean": "backstage-cli package clean",
     "prepack": "backstage-cli package prepack",
     "postpack": "backstage-cli package postpack",
-    "export-dynamic": "npx -y @red-hat-developer-hub/cli@1.10.7 plugin export --no-generate-scalprum-assets --clean"
+    "export-dynamic": "npx -y @red-hat-developer-hub/cli plugin export --no-generate-scalprum-assets --clean"
   },
   "dependencies": {
     "@backstage/core-plugin-api": "1.12.7",
